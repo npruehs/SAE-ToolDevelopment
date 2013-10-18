@@ -39,6 +39,11 @@ namespace LevelEditor.View
 
         #region Methods
 
+        private void ButtonAbout_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.controller.About();
+        }
+
         private void ButtonQuit_OnClick(object sender, RoutedEventArgs e)
         {
             this.controller.Quit();
