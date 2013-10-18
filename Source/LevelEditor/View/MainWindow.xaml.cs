@@ -14,10 +14,14 @@ namespace LevelEditor.View
     /// </summary>
     public partial class MainWindow
     {
+        #region Fields
+
         /// <summary>
         /// Main application controller.
         /// </summary>
-        private App controller;
+        private readonly App controller;
+
+        #endregion
 
         #region Constructors and Destructors
 
@@ -29,6 +33,15 @@ namespace LevelEditor.View
             this.InitializeComponent();
 
             this.controller = (App)Application.Current;
+        }
+
+        #endregion
+
+        #region Methods
+
+        private void ButtonQuit_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.controller.Quit();
         }
 
         #endregion

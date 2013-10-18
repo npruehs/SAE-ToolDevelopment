@@ -10,5 +10,16 @@ namespace LevelEditor.Control
     /// </summary>
     public partial class App
     {
+        #region Public Methods and Operators
+
+        /// <summary>
+        /// Shuts down the application.
+        /// </summary>
+        public void Quit()
+        {
+            this.Shutdown();
+        }
+
+        #endregion
     }
 }
