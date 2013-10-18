@@ -3,7 +3,7 @@
 //   Copyright 2013 Nick Pruehs.
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
-namespace LevelEditor
+namespace LevelEditor.Control
 {
     /// <summary>
     /// Main application controller.
