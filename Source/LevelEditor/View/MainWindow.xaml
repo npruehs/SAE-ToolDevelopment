@@ -3,7 +3,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Level Editor" Height="600" Width="800">
     <DockPanel>
-        <Button Name="ButtonAbout" Click="ButtonAbout_OnClick">About</Button>
-        <Button Name="ButtonQuit" Click="ButtonQuit_OnClick">Quit</Button>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Command="ApplicationCommands.Help"/>
+                <MenuItem Command="ApplicationCommands.Close"/>
+            </MenuItem>
+        </Menu>
     </DockPanel>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Help"
+                    Executed="CommandExecutedHelp"
+                    CanExecute="CommandCanExecuteHelp"/>
+        <CommandBinding Command="ApplicationCommands.Close"
+                    Executed="CommandExecutedClose"
+                    CanExecute="CommandCanExecuteClose"/>
+    </Window.CommandBindings>
 </Window>

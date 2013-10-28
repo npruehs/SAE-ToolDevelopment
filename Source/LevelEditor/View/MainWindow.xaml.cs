@@ -6,6 +6,7 @@
 namespace LevelEditor.View
 {
     using System.Windows;
+    using System.Windows.Input;
 
     using LevelEditor.Control;
 
@@ -39,14 +40,24 @@ namespace LevelEditor.View
 
         #region Methods
 
-        private void ButtonAbout_OnClick(object sender, RoutedEventArgs e)
+        private void CommandCanExecuteClose(object sender, CanExecuteRoutedEventArgs e)
         {
-            this.controller.About();
+            e.CanExecute = this.controller.CanExecuteClose();
         }
 
-        private void ButtonQuit_OnClick(object sender, RoutedEventArgs e)
+        private void CommandCanExecuteHelp(object sender, CanExecuteRoutedEventArgs e)
         {
-            this.controller.Quit();
+            e.CanExecute = this.controller.CanExecuteHelp();
+        }
+
+        private void CommandExecutedClose(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.controller.ExecuteClose();
+        }
+
+        private void CommandExecutedHelp(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.controller.ExecuteHelp();
         }
 
         #endregion

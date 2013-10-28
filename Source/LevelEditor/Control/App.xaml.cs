@@ -15,20 +15,42 @@ namespace LevelEditor.Control
         #region Public Methods and Operators
 
         /// <summary>
-        /// Shows the About window of the application.
+        /// Whether the application can be shut down.
         /// </summary>
-        public void About()
+        /// <returns>
+        /// <c>true</c>, if the application can be shut down, and <c>false</c> otherwise.
+        /// </returns>
+        public bool CanExecuteClose()
         {
-            AboutWindow aboutWindow = new AboutWindow();
-            aboutWindow.Show();
+            return true;
+        }
+
+        /// <summary>
+        /// Whether the About window of the application can be shown.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c>, if the About window of the application can be shown, and <c>false</c> otherwise.
+        /// </returns>
+        public bool CanExecuteHelp()
+        {
+            return true;
         }
 
         /// <summary>
         /// Shuts down the application.
         /// </summary>
-        public void Quit()
+        public void ExecuteClose()
         {
             this.Shutdown();
+        }
+
+        /// <summary>
+        /// Shows the About window of the application.
+        /// </summary>
+        public void ExecuteHelp()
+        {
+            AboutWindow aboutWindow = new AboutWindow();
+            aboutWindow.Show();
         }
 
         #endregion
