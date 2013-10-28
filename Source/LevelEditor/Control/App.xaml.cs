@@ -5,6 +5,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace LevelEditor.Control
 {
+    using System;
     using System.Collections.Generic;
     using System.Windows;
 
@@ -22,6 +23,11 @@ namespace LevelEditor.Control
         /// Window showing information about the application.
         /// </summary>
         private AboutWindow aboutWindow;
+
+        /// <summary>
+        /// Current map being edited by the user.
+        /// </summary>
+        private Map map;
 
         /// <summary>
         /// Window allowing to specify the properties of a new map to create.
@@ -75,6 +81,53 @@ namespace LevelEditor.Control
         /// </summary>
         public void CreateMap()
         {
+            // Parse map dimensions.
+            int width;
+            int height;
+
+            try
+            {
+                width = int.Parse(this.newMapWindow.TextBoxMapWidth.Text);
+            }
+            catch (FormatException)
+            {
+                this.ShowErrorMessage("Incorrect Width", "Please specify a map width.");
+                return;
+            }
+
+            try
+            {
+                height = int.Parse(this.newMapWindow.TextBoxMapHeight.Text);
+            }
+            catch (FormatException)
+            {
+                this.ShowErrorMessage("Incorrect Height", "Please specify a map height.");
+                return;
+            }
+
+            // Create new map.
+            try
+            {
+                this.map = new Map(width, height);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                this.ShowErrorMessage("Incorrect Map Size", e.Message);
+                return;
+            }
+
+            // Fill with tiles.
+            var defaultMapTile = this.newMapWindow.SelectedMapTileType;
+
+            for (var x = 0; x < width; x++)
+            {
+                for (var y = 0; y < height; y++)
+                {
+                    this.map[x, y] = new MapTile(x, y, defaultMapTile);
+                }
+            }
+
+            // Close window.
             this.newMapWindow.Close();
         }
 
@@ -131,6 +184,16 @@ namespace LevelEditor.Control
             this.tileTypes.Add(desert.Name, desert);
             this.tileTypes.Add(water.Name, water);
             this.tileTypes.Add(grass.Name, grass);
+        }
+
+        /// <summary>
+        /// Shows an error message with the specified title and text.
+        /// </summary>
+        /// <param name="title">Title of the error message.</param>
+        /// <param name="text">Text of the error message.</param>
+        private void ShowErrorMessage(string title, string text)
+        {
+            MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.Cancel);
         }
 
         #endregion

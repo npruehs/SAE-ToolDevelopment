@@ -56,15 +56,20 @@ namespace LevelEditor.View
         /// <param name="mapTileTypes">Map tile types to add radio buttons for.</param>
         public void SetMapTileTypes(IEnumerable<string> mapTileTypes)
         {
+            // Add radio buttons.
             foreach (var mapTileType in mapTileTypes)
             {
                 var radioButton = new RadioButton();
                 radioButton.Content = mapTileType;
                 radioButton.GroupName = "MapTileTypes";
                 radioButton.Checked += this.OnMapTileSelected;
-
+                
                 this.DefaultTilePanel.Children.Add(radioButton);
             }
+
+            // Check first radio button.
+            var firstRadioButton = (RadioButton)this.DefaultTilePanel.Children[0];
+            firstRadioButton.IsChecked = true;
         }
 
         #endregion
