@@ -19,6 +19,16 @@ namespace LevelEditor.Control
         #region Fields
 
         /// <summary>
+        /// Window showing information about the application.
+        /// </summary>
+        private AboutWindow aboutWindow;
+
+        /// <summary>
+        /// Window allowing to specify the properties of a new map to create.
+        /// </summary>
+        private NewMapWindow newMapWindow;
+
+        /// <summary>
         /// Available map tile types.
         /// </summary>
         private Dictionary<string, MapTileType> tileTypes;
@@ -50,6 +60,25 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
+        /// Whether the window that allows specifying the properties of a new map to create can be shown.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c>, if the New Map window can be shown, and <c>false</c> otherwise.
+        /// </returns>
+        public bool CanExecuteNew()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Creates a new map based on the properties of the New Map window.
+        /// </summary>
+        public void CreateMap()
+        {
+            this.newMapWindow.Close();
+        }
+
+        /// <summary>
         /// Shuts down the application.
         /// </summary>
         public void ExecuteClose()
@@ -62,8 +91,28 @@ namespace LevelEditor.Control
         /// </summary>
         public void ExecuteHelp()
         {
-            AboutWindow aboutWindow = new AboutWindow();
-            aboutWindow.Show();
+            if (this.aboutWindow == null || !this.aboutWindow.IsLoaded)
+            {
+                this.aboutWindow = new AboutWindow();
+            }
+
+            this.aboutWindow.Show();
+            this.aboutWindow.Focus();
+        }
+
+        /// <summary>
+        /// Shows the window that allows specifying the properties of a new map to create.
+        /// </summary>
+        public void ExecuteNew()
+        {
+            if (this.newMapWindow == null || !this.newMapWindow.IsLoaded)
+            {
+                this.newMapWindow = new NewMapWindow();
+                this.newMapWindow.SetMapTileTypes(this.tileTypes.Keys);
+            }
+
+            this.newMapWindow.Show();
+            this.newMapWindow.Focus();
         }
 
         #endregion

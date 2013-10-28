@@ -50,6 +50,11 @@ namespace LevelEditor.View
             e.CanExecute = this.controller.CanExecuteHelp();
         }
 
+        private void CommandCanExecuteNew(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.controller.CanExecuteNew();
+        }
+
         private void CommandExecutedClose(object sender, ExecutedRoutedEventArgs e)
         {
             this.controller.ExecuteClose();
@@ -58,6 +63,11 @@ namespace LevelEditor.View
         private void CommandExecutedHelp(object sender, ExecutedRoutedEventArgs e)
         {
             this.controller.ExecuteHelp();
+        }
+
+        private void CommandExecutedNew(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.controller.ExecuteNew();
         }
 
         #endregion

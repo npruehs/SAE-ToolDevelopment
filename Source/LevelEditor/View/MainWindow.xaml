@@ -5,6 +5,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
+                <MenuItem Command="ApplicationCommands.New"/>
                 <MenuItem Command="ApplicationCommands.Help"/>
                 <MenuItem Command="ApplicationCommands.Close"/>
             </MenuItem>
@@ -12,6 +13,9 @@
     </DockPanel>
 
     <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.New"
+                    Executed="CommandExecutedNew"
+                    CanExecute="CommandCanExecuteNew"/>
         <CommandBinding Command="ApplicationCommands.Help"
                     Executed="CommandExecutedHelp"
                     CanExecute="CommandCanExecuteHelp"/>
