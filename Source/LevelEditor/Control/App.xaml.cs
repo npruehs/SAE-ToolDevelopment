@@ -5,6 +5,10 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace LevelEditor.Control
 {
+    using System.Collections.Generic;
+    using System.Windows;
+
+    using LevelEditor.Model;
     using LevelEditor.View;
 
     /// <summary>
@@ -12,6 +16,15 @@ namespace LevelEditor.Control
     /// </summary>
     public partial class App
     {
+        #region Fields
+
+        /// <summary>
+        /// Available map tile types.
+        /// </summary>
+        private Dictionary<string, MapTileType> tileTypes;
+
+        #endregion
+
         #region Public Methods and Operators
 
         /// <summary>
@@ -51,6 +64,24 @@ namespace LevelEditor.Control
         {
             AboutWindow aboutWindow = new AboutWindow();
             aboutWindow.Show();
+        }
+
+        #endregion
+
+        #region Methods
+
+        private void OnStartup(object sender, StartupEventArgs e)
+        {
+            // Define map tile types.
+            this.tileTypes = new Dictionary<string, MapTileType>();
+
+            var desert = new MapTileType(3, "Desert");
+            var water = new MapTileType(5, "Water");
+            var grass = new MapTileType(1, "Grass");
+
+            this.tileTypes.Add(desert.Name, desert);
+            this.tileTypes.Add(water.Name, water);
+            this.tileTypes.Add(grass.Name, grass);
         }
 
         #endregion
