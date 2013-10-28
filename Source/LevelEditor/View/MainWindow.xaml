@@ -10,6 +10,23 @@
                 <MenuItem Command="ApplicationCommands.Close"/>
             </MenuItem>
         </Menu>
+
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+                <Button Command="ApplicationCommands.New">
+                    <Image Source="../Resources/Icons/action_create_16xLG.png" />
+                    <Button.ToolTip>
+                        <TextBlock>New Map</TextBlock>
+                    </Button.ToolTip>
+                </Button>
+                <Button Command="ApplicationCommands.Help">
+                    <Image Source="../Resources/Icons/Symbols_Help_and_inclusive_16xLG.png" />
+                    <Button.ToolTip>
+                        <TextBlock>Help</TextBlock>
+                    </Button.ToolTip>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
     </DockPanel>
 
     <Window.CommandBindings>
