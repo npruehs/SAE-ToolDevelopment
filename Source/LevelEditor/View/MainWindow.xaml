@@ -28,7 +28,9 @@
             </ToolBar>
         </ToolBarTray>
 
-        <Canvas Name="MapCanvas" DockPanel.Dock="Top" />
+        <ScrollViewer DockPanel.Dock="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <Canvas Name="MapCanvas"  />
+        </ScrollViewer>
     </DockPanel>
 
     <Window.CommandBindings>
