@@ -64,5 +64,14 @@ namespace LevelEditor.Model
         }
 
         #endregion
+
+        #region Public Methods and Operators
+
+        public override string ToString()
+        {
+            return string.Format("X: {0}, Y: {1}", this.X, this.Y);
+        }
+
+        #endregion
     }
 }

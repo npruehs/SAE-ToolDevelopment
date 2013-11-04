@@ -26,6 +26,11 @@ namespace LevelEditor.Control
         private AboutWindow aboutWindow;
 
         /// <summary>
+        /// Current active brush.
+        /// </summary>
+        private MapTileType currentBrush;
+
+        /// <summary>
         /// Main application window.
         /// </summary>
         private MainWindow mainWindow;
@@ -192,6 +197,26 @@ namespace LevelEditor.Control
             return this.tileImages[tileType];
         }
 
+        public void OnBrushSelected(string brush)
+        {
+            this.currentBrush = this.tileTypes[brush];
+        }
+
+        public void OnTileClicked(Vector2I position)
+        {
+            // Early out if no brush selected.
+            if (this.currentBrush == null)
+            {
+                return;
+            }
+
+            // Modify map model.
+            this.map[position].Type = this.currentBrush.Name;
+
+            // Update canvas.
+            this.mainWindow.UpdateMapCanvas(position, this.tileImages[this.currentBrush.Name]);
+        }
+
         #endregion
 
         #region Methods
@@ -199,6 +224,7 @@ namespace LevelEditor.Control
         private void OnActivated(object sender, EventArgs e)
         {
             this.mainWindow = (MainWindow)this.MainWindow;
+            this.mainWindow.SetMapTileTypes(this.tileTypes.Keys);
         }
 
         private void OnStartup(object sender, StartupEventArgs e)

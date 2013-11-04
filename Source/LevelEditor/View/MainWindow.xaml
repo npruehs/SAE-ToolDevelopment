@@ -28,9 +28,16 @@
             </ToolBar>
         </ToolBarTray>
 
-        <ScrollViewer DockPanel.Dock="Top" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <Canvas Name="MapCanvas"  />
-        </ScrollViewer>
+        <DockPanel DockPanel.Dock="Top">
+            <StackPanel DockPanel.Dock="Left" Width="75">
+                <TextBlock Margin="5">Brush</TextBlock>
+                <StackPanel Margin="5" Name="BrushSelectionPanel" />
+            </StackPanel>
+            
+            <ScrollViewer DockPanel.Dock="Right" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Canvas Name="MapCanvas"  />
+            </ScrollViewer>
+        </DockPanel>
     </DockPanel>
 
     <Window.CommandBindings>

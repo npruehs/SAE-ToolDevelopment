@@ -80,6 +80,24 @@ namespace LevelEditor.Model
             }
         }
 
+        /// <summary>
+        /// Map tile with the specified position.
+        /// </summary>
+        /// <param name="position">Position of the map tile.</param>
+        /// <returns>Map tile with the specified coordinates.</returns>
+        public MapTile this[Vector2I position]
+        {
+            get
+            {
+                return this.Tiles[position.X, position.Y];
+            }
+
+            set
+            {
+                this.Tiles[position.X, position.Y] = value;
+            }
+        }
+
         #endregion
     }
 }
