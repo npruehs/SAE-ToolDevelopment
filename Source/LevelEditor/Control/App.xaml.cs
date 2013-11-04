@@ -8,6 +8,7 @@ namespace LevelEditor.Control
     using System;
     using System.Collections.Generic;
     using System.Windows;
+    using System.Windows.Media.Imaging;
 
     using LevelEditor.Model;
     using LevelEditor.View;
@@ -25,6 +26,11 @@ namespace LevelEditor.Control
         private AboutWindow aboutWindow;
 
         /// <summary>
+        /// Main application window.
+        /// </summary>
+        private MainWindow mainWindow;
+
+        /// <summary>
         /// Current map being edited by the user.
         /// </summary>
         private Map map;
@@ -33,6 +39,11 @@ namespace LevelEditor.Control
         /// Window allowing to specify the properties of a new map to create.
         /// </summary>
         private NewMapWindow newMapWindow;
+
+        /// <summary>
+        /// Available map tile images.
+        /// </summary>
+        private Dictionary<string, BitmapImage> tileImages;
 
         /// <summary>
         /// Available map tile types.
@@ -127,6 +138,9 @@ namespace LevelEditor.Control
                 }
             }
 
+            // Show new map tiles.
+            this.UpdateMapCanvas();
+
             // Close window.
             this.newMapWindow.Close();
         }
@@ -168,9 +182,24 @@ namespace LevelEditor.Control
             this.newMapWindow.Focus();
         }
 
+        /// <summary>
+        /// Gets the image for the map tile of the specified type.
+        /// </summary>
+        /// <param name="tileType">Type of the tile to get the image for.</param>
+        /// <returns>Image for the map tile of the specified type.</returns>
+        public BitmapImage GetTileImage(string tileType)
+        {
+            return this.tileImages[tileType];
+        }
+
         #endregion
 
         #region Methods
+
+        private void OnActivated(object sender, EventArgs e)
+        {
+            this.mainWindow = (MainWindow)this.MainWindow;
+        }
 
         private void OnStartup(object sender, StartupEventArgs e)
         {
@@ -184,6 +213,21 @@ namespace LevelEditor.Control
             this.tileTypes.Add(desert.Name, desert);
             this.tileTypes.Add(water.Name, water);
             this.tileTypes.Add(grass.Name, grass);
+
+            // Load sprites.
+            this.tileImages = new Dictionary<string, BitmapImage>();
+
+            foreach (var tileType in this.tileTypes.Values)
+            {
+                var imageUri = "pack://application:,,,/Resources/MapTiles/" + tileType.Name + ".png";
+
+                BitmapImage tileImage = new BitmapImage();
+                tileImage.BeginInit();
+                tileImage.UriSource = new Uri(imageUri);
+                tileImage.EndInit();
+
+                this.tileImages.Add(tileType.Name, tileImage);
+            }
         }
 
         /// <summary>
@@ -194,6 +238,14 @@ namespace LevelEditor.Control
         private void ShowErrorMessage(string title, string text)
         {
             MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.Cancel);
+        }
+
+        /// <summary>
+        /// Passes the current map to the canvas for rendering.
+        /// </summary>
+        private void UpdateMapCanvas()
+        {
+            this.mainWindow.UpdateMapCanvas(this.map);
         }
 
         #endregion

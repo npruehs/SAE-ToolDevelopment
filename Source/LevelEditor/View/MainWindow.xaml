@@ -27,6 +27,8 @@
                 </Button>
             </ToolBar>
         </ToolBarTray>
+
+        <Canvas Name="MapCanvas" DockPanel.Dock="Top" />
     </DockPanel>
 
     <Window.CommandBindings>

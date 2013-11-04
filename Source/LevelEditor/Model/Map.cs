@@ -32,6 +32,9 @@ namespace LevelEditor.Model
                 throw new ArgumentOutOfRangeException("height", "Height must be greater than zero.");
             }
 
+            this.Width = width;
+            this.Height = height;
+
             this.Tiles = new MapTile[width, height];
         }
 
@@ -40,9 +43,19 @@ namespace LevelEditor.Model
         #region Public Properties
 
         /// <summary>
+        /// Height of this map, in tiles.
+        /// </summary>
+        public int Height { get; private set; }
+
+        /// <summary>
         /// Tiles of this map.
         /// </summary>
         public MapTile[,] Tiles { get; private set; }
+
+        /// <summary>
+        /// Width of this map, in tiles.
+        /// </summary>
+        public int Width { get; private set; }
 
         #endregion
 
