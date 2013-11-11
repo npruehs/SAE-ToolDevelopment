@@ -6,7 +6,12 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Command="ApplicationCommands.New"/>
+                <Separator />
+                <MenuItem Command="ApplicationCommands.Open"/>
+                <MenuItem Command="ApplicationCommands.SaveAs"/>
+                <Separator />
                 <MenuItem Command="ApplicationCommands.Help"/>
+                <Separator />
                 <MenuItem Command="ApplicationCommands.Close"/>
             </MenuItem>
         </Menu>
@@ -19,6 +24,20 @@
                         <TextBlock>New Map</TextBlock>
                     </Button.ToolTip>
                 </Button>
+                <Separator />
+                <Button Command="ApplicationCommands.Open">
+                    <Image Source="../Resources/Icons/Open_6529.png" />
+                    <Button.ToolTip>
+                        <TextBlock>Open</TextBlock>
+                    </Button.ToolTip>
+                </Button>
+                <Button Command="ApplicationCommands.SaveAs">
+                    <Image Source="../Resources/Icons/Save_6530.png" />
+                    <Button.ToolTip>
+                        <TextBlock>Save As</TextBlock>
+                    </Button.ToolTip>
+                </Button>
+                <Separator />
                 <Button Command="ApplicationCommands.Help">
                     <Image Source="../Resources/Icons/Symbols_Help_and_inclusive_16xLG.png" />
                     <Button.ToolTip>
@@ -44,6 +63,12 @@
         <CommandBinding Command="ApplicationCommands.New"
                     Executed="CommandExecutedNew"
                     CanExecute="CommandCanExecuteNew"/>
+        <CommandBinding Command="ApplicationCommands.Open"
+                    Executed="CommandExecutedOpen"
+                    CanExecute="CommandCanExecuteOpen"/>
+        <CommandBinding Command="ApplicationCommands.SaveAs"
+                    Executed="CommandExecutedSaveAs"
+                    CanExecute="CommandCanExecuteSaveAs"/>
         <CommandBinding Command="ApplicationCommands.Help"
                     Executed="CommandExecutedHelp"
                     CanExecute="CommandCanExecuteHelp"/>

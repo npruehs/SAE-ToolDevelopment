@@ -155,6 +155,16 @@ namespace LevelEditor.View
             e.CanExecute = this.controller.CanExecuteNew();
         }
 
+        private void CommandCanExecuteOpen(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.controller.CanExecuteOpen();
+        }
+
+        private void CommandCanExecuteSaveAs(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.controller.CanExecuteSaveAs();
+        }
+
         private void CommandExecutedClose(object sender, ExecutedRoutedEventArgs e)
         {
             this.controller.ExecuteClose();
@@ -168,6 +178,16 @@ namespace LevelEditor.View
         private void CommandExecutedNew(object sender, ExecutedRoutedEventArgs e)
         {
             this.controller.ExecuteNew();
+        }
+
+        private void CommandExecutedOpen(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.controller.ExecuteOpen();
+        }
+
+        private void CommandExecutedSaveAs(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.controller.ExecuteSaveAs();
         }
 
         private void OnBrushDown(object sender, MouseButtonEventArgs e)

@@ -7,17 +7,41 @@ namespace LevelEditor.Control
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Windows;
     using System.Windows.Media.Imaging;
+    using System.Xml;
 
     using LevelEditor.Model;
     using LevelEditor.View;
+
+    using Microsoft.Win32;
 
     /// <summary>
     /// Main application controller.
     /// </summary>
     public partial class App
     {
+        #region Constants
+
+        private const string MapFileExtension = ".map";
+
+        private const string MapFileFilter = "Map files (.map)|*.map";
+
+        private const string XmlElementHeight = "Height";
+
+        private const string XmlElementPositionX = "X";
+
+        private const string XmlElementPositionY = "Y";
+
+        private const string XmlElementTiles = "Tiles";
+
+        private const string XmlElementType = "Type";
+
+        private const string XmlElementWidth = "Width";
+
+        #endregion
+
         #region Fields
 
         /// <summary>
@@ -88,6 +112,28 @@ namespace LevelEditor.Control
         /// <c>true</c>, if the New Map window can be shown, and <c>false</c> otherwise.
         /// </returns>
         public bool CanExecuteNew()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Whether an existing map can be opened.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c>, if an existing map can be opened, and <c>false</c> otherwise.
+        /// </returns>
+        public bool CanExecuteOpen()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Whether the current map can be saved.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c>, the current map can be saved, and <c>false</c> otherwise.
+        /// </returns>
+        public bool CanExecuteSaveAs()
         {
             return true;
         }
@@ -185,6 +231,160 @@ namespace LevelEditor.Control
 
             this.newMapWindow.Show();
             this.newMapWindow.Focus();
+        }
+
+        /// <summary>
+        /// Shows an open file dialog box and opens the specified map file.
+        /// </summary>
+        public void ExecuteOpen()
+        {
+            // Show open file dialog box.
+            OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    AddExtension = true, 
+                    CheckFileExists = true, 
+                    CheckPathExists = true, 
+                    DefaultExt = MapFileExtension, 
+                    FileName = "Another Map", 
+                    Filter = MapFileFilter, 
+                    ValidateNames = true
+                };
+
+            var result = openFileDialog.ShowDialog();
+
+            if (result != true)
+            {
+                return;
+            }
+
+            // Open map file.
+            using (var stream = openFileDialog.OpenFile())
+            {
+                using (var reader = XmlReader.Create(stream))
+                {
+                    try
+                    {
+                        // Read document element.
+                        reader.Read();
+
+                        // Read map dimensions.
+                        reader.ReadToFollowing(XmlElementWidth);
+                        reader.ReadStartElement();
+                        var width = reader.ReadContentAsInt();
+
+                        reader.ReadToFollowing(XmlElementHeight);
+                        reader.ReadStartElement();
+                        var height = reader.ReadContentAsInt();
+
+                        // Create new map.
+                        var loadedMap = new Map(width, height);
+
+                        // Read map tiles.
+                        reader.ReadToFollowing(XmlElementTiles);
+
+                        for (var i = 0; i < width * height; i++)
+                        {
+                            reader.ReadToFollowing(XmlElementPositionX);
+                            reader.ReadStartElement();
+                            var x = reader.ReadContentAsInt();
+
+                            reader.ReadToFollowing(XmlElementPositionY);
+                            reader.ReadStartElement();
+                            var y = reader.ReadContentAsInt();
+
+                            reader.ReadToFollowing(XmlElementType);
+                            reader.ReadStartElement();
+                            var type = reader.ReadContentAsString();
+
+                            var mapTile = new MapTile(x, y, type);
+                            loadedMap[x, y] = mapTile;
+                        }
+
+                        // Show new map tiles.
+                        this.map = loadedMap;
+                        this.UpdateMapCanvas();
+                    }
+                    catch (XmlException)
+                    {
+                        this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
+                    }
+                    catch (InvalidCastException)
+                    {
+                        this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Shows a save file dialog box and saves the current map to the specified file.
+        /// </summary>
+        public void ExecuteSaveAs()
+        {
+            // Show save file dialog box.
+            if (this.map == null)
+            {
+                this.ShowErrorMessage("No map", "No map to save.");
+                return;
+            }
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+                {
+                    AddExtension = true, 
+                    CheckPathExists = true, 
+                    DefaultExt = MapFileExtension, 
+                    FileName = "Another Map", 
+                    Filter = MapFileFilter, 
+                    ValidateNames = true
+                };
+
+            var result = saveFileDialog.ShowDialog();
+
+            if (result != true)
+            {
+                return;
+            }
+
+            // Open file stream.
+            using (var stream = saveFileDialog.OpenFile())
+            {
+                XmlWriterSettings settings = new XmlWriterSettings { Indent = true };
+
+                using (var writer = XmlWriter.Create(stream, settings))
+                {
+                    // Write document element.
+                    writer.WriteStartElement("Map");
+
+                    // Write the namespace declaration.
+                    writer.WriteAttributeString(
+                        "xmlns", "map", null, "http://www.npruehs.de/teaching/tool-development/");
+
+                    // Write map dimensions.
+                    writer.WriteElementString(XmlElementWidth, this.map.Width.ToString(CultureInfo.InvariantCulture));
+                    writer.WriteElementString(XmlElementHeight, this.map.Height.ToString(CultureInfo.InvariantCulture));
+
+                    // Write map tiles.
+                    writer.WriteStartElement(XmlElementTiles);
+                    foreach (var mapTile in this.map.Tiles)
+                    {
+                        writer.WriteStartElement("MapTile");
+                        writer.WriteElementString(
+                            XmlElementPositionX, mapTile.Position.X.ToString(CultureInfo.InvariantCulture));
+                        writer.WriteElementString(
+                            XmlElementPositionY, mapTile.Position.Y.ToString(CultureInfo.InvariantCulture));
+                        writer.WriteElementString(XmlElementType, mapTile.Type);
+                        writer.WriteEndElement();
+                    }
+
+                    writer.WriteEndElement();
+
+                    writer.WriteEndElement();
+                }
+            }
         }
 
         /// <summary>
