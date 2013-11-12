@@ -135,7 +135,7 @@ namespace LevelEditor.Control
         /// </returns>
         public bool CanExecuteSaveAs()
         {
-            return true;
+            return this.map != null;
         }
 
         /// <summary>
@@ -326,12 +326,6 @@ namespace LevelEditor.Control
         public void ExecuteSaveAs()
         {
             // Show save file dialog box.
-            if (this.map == null)
-            {
-                this.ShowErrorMessage("No map", "No map to save.");
-                return;
-            }
-
             SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
                     AddExtension = true, 
