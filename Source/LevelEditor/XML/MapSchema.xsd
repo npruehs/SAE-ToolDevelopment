@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="MapSchema"
+    targetNamespace="http://www.npruehs.de/teaching"
+    elementFormDefault="qualified"
+    xmlns="http://www.npruehs.de/teaching"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:annotation>
+    <xs:documentation xml:lang="en">
+      XML schema for map files.
+    </xs:documentation>
+  </xs:annotation>
+  
+  <xs:element name="Map" type="MapType" />
+
+  <!-- Map -->
+  <xs:complexType name="MapType">
+    <xs:sequence>
+      <xs:element name="Tiles" type="TilesType" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+    
+    <xs:attribute name="Height" type="xs:int" use="required" />
+    <xs:attribute name="Width" type="xs:int" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="TilesType">
+    <xs:sequence>
+      <xs:element name="MapTile" type="MapTileType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- MapTile -->
+  <xs:complexType name="MapTileType">
+    <xs:sequence>
+      <xs:element name="Position" type="Vector2I" minOccurs="1" maxOccurs="1" />
+      <xs:element name="Type" type="xs:string" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Vector2I -->
+  <xs:complexType name="Vector2I">
+    <xs:sequence>
+      <xs:element name="X" type="xs:int" minOccurs="1" maxOccurs="1" />
+      <xs:element name="Y" type="xs:int" minOccurs="1" maxOccurs="1" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

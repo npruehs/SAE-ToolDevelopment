@@ -7,7 +7,6 @@ namespace LevelEditor.Control
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Windows;
     using System.Windows.Media.Imaging;
     using System.Xml;
@@ -261,16 +260,32 @@ namespace LevelEditor.Control
             // Open map file.
             using (var stream = openFileDialog.OpenFile())
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(Map));
-
                 try
                 {
+                    // Validate schema.
+                    XmlReaderSettings readerSettings = new XmlReaderSettings();
+                    readerSettings.Schemas.Add("http://www.npruehs.de/teaching", "XML/MapSchema.xsd");
+                    readerSettings.ValidationType = ValidationType.Schema;
+
+                    using (var reader = XmlReader.Create(openFileDialog.FileName, readerSettings))
+                    {
+                        while (reader.Read())
+                        {
+                        }
+                    }
+
+                    // Deserialize map.
+                    XmlSerializer serializer = new XmlSerializer(typeof(Map));
                     this.map = (Map)serializer.Deserialize(stream);
 
                     // Show new map tiles.
                     this.UpdateMapCanvas();
                 }
                 catch (InvalidOperationException)
+                {
+                    this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
+                }
+                catch (XmlException)
                 {
                     this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
                 }
