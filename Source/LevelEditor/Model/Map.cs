@@ -6,6 +6,7 @@
 namespace LevelEditor.Model
 {
     using System;
+    using System.Xml.Serialization;
 
     /// <summary>
     /// Map data.
@@ -13,6 +14,13 @@ namespace LevelEditor.Model
     public class Map
     {
         #region Constructors and Destructors
+
+        /// <summary>
+        /// Parameter-less constructor provided for deserialization.
+        /// </summary>
+        public Map()
+        {
+        }
 
         /// <summary>
         /// Creates a new map with the specified width and height.
@@ -35,7 +43,7 @@ namespace LevelEditor.Model
             this.Width = width;
             this.Height = height;
 
-            this.Tiles = new MapTile[width, height];
+            this.Tiles = new MapTile[width * height];
         }
 
         #endregion
@@ -45,17 +53,19 @@ namespace LevelEditor.Model
         /// <summary>
         /// Height of this map, in tiles.
         /// </summary>
-        public int Height { get; private set; }
+        [XmlAttribute]
+        public int Height { get; set; }
 
         /// <summary>
         /// Tiles of this map.
         /// </summary>
-        public MapTile[,] Tiles { get; private set; }
+        public MapTile[] Tiles { get; set; }
 
         /// <summary>
         /// Width of this map, in tiles.
         /// </summary>
-        public int Width { get; private set; }
+        [XmlAttribute]
+        public int Width { get; set; }
 
         #endregion
 
@@ -71,12 +81,30 @@ namespace LevelEditor.Model
         {
             get
             {
-                return this.Tiles[x, y];
+                return this.Tiles[(y * this.Width) + x];
             }
 
             set
             {
-                this.Tiles[x, y] = value;
+                this.Tiles[(y * this.Width) + x] = value;
+            }
+        }
+
+        /// <summary>
+        /// Map tile with the specified index.
+        /// </summary>
+        /// <param name="index">Index of the map tile.</param>
+        /// <returns>Map tile with the specified index.</returns>
+        public MapTile this[int index]
+        {
+            get
+            {
+                return this.Tiles[index];
+            }
+
+            set
+            {
+                this.Tiles[index] = value;
             }
         }
 
@@ -89,12 +117,12 @@ namespace LevelEditor.Model
         {
             get
             {
-                return this.Tiles[position.X, position.Y];
+                return this[position.X, position.Y];
             }
 
             set
             {
-                this.Tiles[position.X, position.Y] = value;
+                this[position.X, position.Y] = value;
             }
         }
 

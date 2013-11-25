@@ -11,6 +11,7 @@ namespace LevelEditor.Control
     using System.Windows;
     using System.Windows.Media.Imaging;
     using System.Xml;
+    using System.Xml.Serialization;
 
     using LevelEditor.Model;
     using LevelEditor.View;
@@ -260,62 +261,18 @@ namespace LevelEditor.Control
             // Open map file.
             using (var stream = openFileDialog.OpenFile())
             {
-                using (var reader = XmlReader.Create(stream))
+                XmlSerializer serializer = new XmlSerializer(typeof(Map));
+
+                try
                 {
-                    try
-                    {
-                        // Read document element.
-                        reader.Read();
+                    this.map = (Map)serializer.Deserialize(stream);
 
-                        // Read map dimensions.
-                        reader.ReadToFollowing(XmlElementWidth);
-                        reader.ReadStartElement();
-                        var width = reader.ReadContentAsInt();
-
-                        reader.ReadToFollowing(XmlElementHeight);
-                        reader.ReadStartElement();
-                        var height = reader.ReadContentAsInt();
-
-                        // Create new map.
-                        var loadedMap = new Map(width, height);
-
-                        // Read map tiles.
-                        reader.ReadToFollowing(XmlElementTiles);
-
-                        for (var i = 0; i < width * height; i++)
-                        {
-                            reader.ReadToFollowing(XmlElementPositionX);
-                            reader.ReadStartElement();
-                            var x = reader.ReadContentAsInt();
-
-                            reader.ReadToFollowing(XmlElementPositionY);
-                            reader.ReadStartElement();
-                            var y = reader.ReadContentAsInt();
-
-                            reader.ReadToFollowing(XmlElementType);
-                            reader.ReadStartElement();
-                            var type = reader.ReadContentAsString();
-
-                            var mapTile = new MapTile(x, y, type);
-                            loadedMap[x, y] = mapTile;
-                        }
-
-                        // Show new map tiles.
-                        this.map = loadedMap;
-                        this.UpdateMapCanvas();
-                    }
-                    catch (XmlException)
-                    {
-                        this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
-                    }
-                    catch (InvalidCastException)
-                    {
-                        this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                        this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
-                    }
+                    // Show new map tiles.
+                    this.UpdateMapCanvas();
+                }
+                catch (InvalidOperationException)
+                {
+                    this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
                 }
             }
         }
@@ -346,38 +303,12 @@ namespace LevelEditor.Control
             // Open file stream.
             using (var stream = saveFileDialog.OpenFile())
             {
-                XmlWriterSettings settings = new XmlWriterSettings { Indent = true };
+                XmlSerializer serializer = new XmlSerializer(typeof(Map));
 
-                using (var writer = XmlWriter.Create(stream, settings))
-                {
-                    // Write document element.
-                    writer.WriteStartElement("Map");
+                XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
+                namespaces.Add("np", "http://www.npruehs.de/teaching");
 
-                    // Write the namespace declaration.
-                    writer.WriteAttributeString(
-                        "xmlns", "map", null, "http://www.npruehs.de/teaching/tool-development/");
-
-                    // Write map dimensions.
-                    writer.WriteElementString(XmlElementWidth, this.map.Width.ToString(CultureInfo.InvariantCulture));
-                    writer.WriteElementString(XmlElementHeight, this.map.Height.ToString(CultureInfo.InvariantCulture));
-
-                    // Write map tiles.
-                    writer.WriteStartElement(XmlElementTiles);
-                    foreach (var mapTile in this.map.Tiles)
-                    {
-                        writer.WriteStartElement("MapTile");
-                        writer.WriteElementString(
-                            XmlElementPositionX, mapTile.Position.X.ToString(CultureInfo.InvariantCulture));
-                        writer.WriteElementString(
-                            XmlElementPositionY, mapTile.Position.Y.ToString(CultureInfo.InvariantCulture));
-                        writer.WriteElementString(XmlElementType, mapTile.Type);
-                        writer.WriteEndElement();
-                    }
-
-                    writer.WriteEndElement();
-
-                    writer.WriteEndElement();
-                }
+                serializer.Serialize(stream, this.map, namespaces);
             }
         }
 

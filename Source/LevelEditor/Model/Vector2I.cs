@@ -8,23 +8,16 @@ namespace LevelEditor.Model
     /// <summary>
     /// Two-dimensional vector with integer coordinates.
     /// </summary>
-    public struct Vector2I
+    public class Vector2I
     {
-        #region Fields
-
-        /// <summary>
-        /// X-component of this vector.
-        /// </summary>
-        private readonly int x;
-
-        /// <summary>
-        /// Y-component of this vector.
-        /// </summary>
-        private readonly int y;
-
-        #endregion
-
         #region Constructors and Destructors
+
+        /// <summary>
+        /// Constructs a new null vector.
+        /// </summary>
+        public Vector2I()
+        {
+        }
 
         /// <summary>
         /// Constructs a new vector with the specified components.
@@ -33,8 +26,8 @@ namespace LevelEditor.Model
         /// <param name="y">Y-component of the vector.</param>
         public Vector2I(int x, int y)
         {
-            this.x = x;
-            this.y = y;
+            this.X = x;
+            this.Y = y;
         }
 
         #endregion
@@ -44,29 +37,23 @@ namespace LevelEditor.Model
         /// <summary>
         /// X-component of this vector.
         /// </summary>
-        public int X
-        {
-            get
-            {
-                return this.x;
-            }
-        }
+        public int X { get; set; }
 
         /// <summary>
         /// Y-component of this vector.
         /// </summary>
-        public int Y
-        {
-            get
-            {
-                return this.y;
-            }
-        }
+        public int Y { get; set; }
 
         #endregion
 
         #region Public Methods and Operators
 
+        /// <summary>
+        /// Returns a string that represents the current object.
+        /// </summary>
+        /// <returns>
+        /// A string that represents the current object.
+        /// </returns>
         public override string ToString()
         {
             return string.Format("X: {0}, Y: {1}", this.X, this.Y);
