@@ -10,6 +10,7 @@ namespace LevelEditor.Control
     using System.Windows;
     using System.Windows.Media.Imaging;
     using System.Xml;
+    using System.Xml.Schema;
     using System.Xml.Serialization;
 
     using LevelEditor.Model;
@@ -286,6 +287,10 @@ namespace LevelEditor.Control
                     this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
                 }
                 catch (XmlException)
+                {
+                    this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
+                }
+                catch (XmlSchemaValidationException)
                 {
                     this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
                 }

@@ -11,6 +11,7 @@ namespace LevelEditor.Model
     /// <summary>
     /// Map data.
     /// </summary>
+    [XmlRoot(Namespace = "http://www.npruehs.de/teaching")]
     public class Map
     {
         #region Constructors and Destructors
