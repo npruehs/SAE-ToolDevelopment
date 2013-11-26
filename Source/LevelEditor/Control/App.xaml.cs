@@ -7,6 +7,8 @@ namespace LevelEditor.Control
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Threading;
     using System.Windows;
     using System.Windows.Media.Imaging;
     using System.Xml;
@@ -168,33 +170,18 @@ namespace LevelEditor.Control
                 return;
             }
 
-            // Create new map.
-            try
-            {
-                this.map = new Map(width, height);
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                this.ShowErrorMessage("Incorrect Map Size", e.Message);
-                return;
-            }
+            // Update status text.
+            this.mainWindow.SetStatusText("Creating new map...");
 
-            // Fill with tiles.
-            var defaultMapTile = this.newMapWindow.SelectedMapTileType;
+            // Run background worker thread.
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.DoWork += this.BackgroundCreateMap;
+            worker.RunWorkerCompleted += this.BackgroundCreateMapCompleted;
+            worker.ProgressChanged += this.BackgroundCreateMapProgressChanged;
+            worker.WorkerReportsProgress = true;
 
-            for (var x = 0; x < width; x++)
-            {
-                for (var y = 0; y < height; y++)
-                {
-                    this.map[x, y] = new MapTile(x, y, defaultMapTile);
-                }
-            }
-
-            // Show new map tiles.
-            this.UpdateMapCanvas();
-
-            // Close window.
-            this.newMapWindow.Close();
+            Vector2I mapSize = new Vector2I(width, height);
+            worker.RunWorkerAsync(mapSize);
         }
 
         /// <summary>
@@ -365,6 +352,67 @@ namespace LevelEditor.Control
         #endregion
 
         #region Methods
+
+        private void BackgroundCreateMap(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = (BackgroundWorker)sender;
+            Vector2I mapSize = (Vector2I)e.Argument;
+
+            // Create new map.
+            try
+            {
+                this.map = new Map(mapSize.X, mapSize.Y);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                this.ShowErrorMessage("Incorrect Map Size", ex.Message);
+                return;
+            }
+
+            // Fill with tiles.
+            var defaultMapTile = this.newMapWindow.SelectedMapTileType;
+
+            var tilesCreated = 0;
+            var totalTiles = mapSize.X * mapSize.Y;
+
+            for (var x = 0; x < mapSize.X; x++)
+            {
+                for (var y = 0; y < mapSize.Y; y++)
+                {
+                    this.map[x, y] = new MapTile(x, y, defaultMapTile);
+                    tilesCreated++;
+                }
+
+                // Report progress.
+                worker.ReportProgress(tilesCreated * 100 / totalTiles);
+                Thread.Sleep(1);
+            }
+        }
+
+        private void BackgroundCreateMapCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            // Show new map tiles.
+            this.UpdateMapCanvas();
+
+            // Close window.
+            this.newMapWindow.Close();
+
+            // Reset status text.
+            this.mainWindow.ResetStatusText();
+        }
+
+        private void BackgroundCreateMapProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            // Update progress bar.
+            this.mainWindow.SetProgress(e.ProgressPercentage);
+
+            if (e.ProgressPercentage >= 100)
+            {
+                // Map tiles have been created. Update status text and progress bar.
+                this.mainWindow.SetProgress(0);
+                this.mainWindow.SetStatusText("Updating canvas...");
+            }
+        }
 
         private void OnActivated(object sender, EventArgs e)
         {

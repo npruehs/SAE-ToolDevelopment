@@ -47,6 +47,18 @@
             </ToolBar>
         </ToolBarTray>
 
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock Name="StatusText">Ready.</TextBlock>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="StatusProgressText"></TextBlock>
+            </StatusBarItem>
+            <StatusBarItem HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                <ProgressBar Name="StatusProgress" />
+            </StatusBarItem>
+        </StatusBar>
+        
         <DockPanel DockPanel.Dock="Top">
             <StackPanel DockPanel.Dock="Left" Width="75">
                 <TextBlock Margin="5">Brush</TextBlock>

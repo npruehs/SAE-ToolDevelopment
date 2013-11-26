@@ -64,6 +64,14 @@ namespace LevelEditor.View
         #region Public Methods and Operators
 
         /// <summary>
+        /// Resets the status text of this window.
+        /// </summary>
+        public void ResetStatusText()
+        {
+            this.StatusText.Text = "Ready.";
+        }
+
+        /// <summary>
         /// Sets up radio buttons for each of the specified map tile types.
         /// </summary>
         /// <param name="mapTileTypes">Map tile types to add radio buttons for.</param>
@@ -80,6 +88,25 @@ namespace LevelEditor.View
 
                 this.BrushSelectionPanel.Children.Add(radioButton);
             }
+        }
+
+        /// <summary>
+        /// Sets the progress bar and text of this window.
+        /// </summary>
+        /// <param name="progress">New progress, in percent.</param>
+        public void SetProgress(int progress)
+        {
+            this.StatusProgress.Value = progress;
+            this.StatusProgressText.Text = progress > 0 ? string.Format("({0} %)", progress) : string.Empty;
+        }
+
+        /// <summary>
+        /// Sets the status text of this window.
+        /// </summary>
+        /// <param name="text">New status text.</param>
+        public void SetStatusText(string text)
+        {
+            this.StatusText.Text = text;
         }
 
         /// <summary>
@@ -126,6 +153,8 @@ namespace LevelEditor.View
                     image.MouseMove += this.OnTileClicked;
                 }
             }
+
+            this.ResetStatusText();
         }
 
         /// <summary>
