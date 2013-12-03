@@ -15,6 +15,7 @@ namespace LevelEditor.Control
     using System.Xml.Schema;
     using System.Xml.Serialization;
 
+    using LevelEditor.Control.Commands;
     using LevelEditor.Model;
     using LevelEditor.View;
 
@@ -48,6 +49,16 @@ namespace LevelEditor.Control
         #region Fields
 
         /// <summary>
+        /// Stack of commands that can be redone.
+        /// </summary>
+        private readonly Stack<ICommand> redoStack = new Stack<ICommand>();
+
+        /// <summary>
+        /// Stack of commands that can be undone.
+        /// </summary>
+        private readonly Stack<ICommand> undoStack = new Stack<ICommand>();
+
+        /// <summary>
         /// Window showing information about the application.
         /// </summary>
         private AboutWindow aboutWindow;
@@ -56,6 +67,11 @@ namespace LevelEditor.Control
         /// Current active brush.
         /// </summary>
         private MapTileType currentBrush;
+
+        /// <summary>
+        /// Current draw command that will be pushed on Undo stack.
+        /// </summary>
+        private DrawCommand currentDrawCommand;
 
         /// <summary>
         /// Main application window.
@@ -131,6 +147,17 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
+        /// Whether there is any command to redo.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c>, if there's any command to redo, and <c>false</c> otherwise.
+        /// </returns>
+        public bool CanExecuteRedo()
+        {
+            return this.redoStack.Count > 0;
+        }
+
+        /// <summary>
         /// Whether the current map can be saved.
         /// </summary>
         /// <returns>
@@ -139,6 +166,17 @@ namespace LevelEditor.Control
         public bool CanExecuteSaveAs()
         {
             return this.map != null;
+        }
+
+        /// <summary>
+        /// Whether there is any command to undo.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c>, if there's any command to undo, and <c>false</c> otherwise.
+        /// </returns>
+        public bool CanExecuteUndo()
+        {
+            return this.undoStack.Count > 0;
         }
 
         /// <summary>
@@ -285,6 +323,20 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
+        /// Executes the most recent undone command.
+        /// </summary>
+        public void ExecuteRedo()
+        {
+            // Move command from Redo to Undo stack.
+            var command = this.redoStack.Pop();
+            this.undoStack.Push(command);
+
+            // Redo command.
+            command.DoCommand();
+            this.UpdateMapCanvas();
+        }
+
+        /// <summary>
         /// Shows a save file dialog box and saves the current map to the specified file.
         /// </summary>
         public void ExecuteSaveAs()
@@ -320,6 +372,20 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
+        /// Undoes the last command.
+        /// </summary>
+        public void ExecuteUndo()
+        {
+            // Move command from Undo to Redo stack.
+            var command = this.undoStack.Pop();
+            this.redoStack.Push(command);
+
+            // Undo command.
+            command.UndoCommand();
+            this.UpdateMapCanvas();
+        }
+
+        /// <summary>
         /// Gets the image for the map tile of the specified type.
         /// </summary>
         /// <param name="tileType">Type of the tile to get the image for.</param>
@@ -329,9 +395,26 @@ namespace LevelEditor.Control
             return this.tileImages[tileType];
         }
 
+        /// <summary>
+        /// Prepares a new command that can be undone later.
+        /// </summary>
+        public void OnBrushDown()
+        {
+            this.currentDrawCommand = new DrawCommand(this.map);
+        }
+
         public void OnBrushSelected(string brush)
         {
             this.currentBrush = this.tileTypes[brush];
+        }
+
+        /// <summary>
+        /// Pushes the current command, enabling Undo.
+        /// </summary>
+        public void OnBrushUp()
+        {
+            this.undoStack.Push(this.currentDrawCommand);
+            this.redoStack.Clear();
         }
 
         public void OnTileClicked(Vector2I position)
@@ -342,7 +425,16 @@ namespace LevelEditor.Control
                 return;
             }
 
+            // Early out if nothing changed.
+            if (this.map[position].Type.Equals(this.currentBrush.Name))
+            {
+                return;
+            }
+
             // Modify map model.
+            this.currentDrawCommand.OldTileTypes[position] = this.map[position].Type;
+            this.currentDrawCommand.NewTileTypes[position] = this.currentBrush.Name;
+
             this.map[position].Type = this.currentBrush.Name;
 
             // Update canvas.
@@ -399,6 +491,10 @@ namespace LevelEditor.Control
 
             // Reset status text.
             this.mainWindow.ResetStatusText();
+
+            // Reset undo stack.
+            this.undoStack.Clear();
+            this.redoStack.Clear();
         }
 
         private void BackgroundCreateMapProgressChanged(object sender, ProgressChangedEventArgs e)

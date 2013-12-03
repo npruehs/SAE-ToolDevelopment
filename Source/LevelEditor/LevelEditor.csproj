@@ -53,6 +53,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Control\Commands\DrawCommand.cs" />
+    <Compile Include="Control\Commands\ICommand.cs" />
     <Compile Include="View\NewMapWindow.xaml.cs">
       <DependentUpon>NewMapWindow.xaml</DependentUpon>
     </Compile>
@@ -127,6 +129,10 @@
   <ItemGroup>
     <Resource Include="Resources\Icons\Open_6529.png" />
     <Resource Include="Resources\Icons\Save_6530.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Icons\Arrow_RedoRetry_16xLG_color.png" />
+    <Resource Include="Resources\Icons\Arrow_UndoRevertRestore_16xLG_color.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

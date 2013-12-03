@@ -191,9 +191,19 @@ namespace LevelEditor.View
             e.CanExecute = this.controller.CanExecuteOpen();
         }
 
+        private void CommandCanExecuteRedo(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.controller.CanExecuteRedo();
+        }
+
         private void CommandCanExecuteSaveAs(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = this.controller.CanExecuteSaveAs();
+        }
+
+        private void CommandCanExecuteUndo(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.controller.CanExecuteUndo();
         }
 
         private void CommandExecutedClose(object sender, ExecutedRoutedEventArgs e)
@@ -216,14 +226,25 @@ namespace LevelEditor.View
             this.controller.ExecuteOpen();
         }
 
+        private void CommandExecutedRedo(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.controller.ExecuteRedo();
+        }
+
         private void CommandExecutedSaveAs(object sender, ExecutedRoutedEventArgs e)
         {
             this.controller.ExecuteSaveAs();
         }
 
+        private void CommandExecutedUndo(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.controller.ExecuteUndo();
+        }
+
         private void OnBrushDown(object sender, MouseButtonEventArgs e)
         {
             this.brushDown = true;
+            this.controller.OnBrushDown();
         }
 
         private void OnBrushSelected(object sender, RoutedEventArgs e)
@@ -235,6 +256,7 @@ namespace LevelEditor.View
         private void OnBrushUp(object sender, MouseButtonEventArgs e)
         {
             this.brushDown = false;
+            this.controller.OnBrushUp();
         }
 
         private void OnTileClicked(object sender, MouseEventArgs mouseEventArgs)

@@ -14,6 +14,10 @@
                 <Separator />
                 <MenuItem Command="ApplicationCommands.Close"/>
             </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Command="ApplicationCommands.Undo"/>
+                <MenuItem Command="ApplicationCommands.Redo"/>
+            </MenuItem>
         </Menu>
 
         <ToolBarTray DockPanel.Dock="Top">
@@ -35,6 +39,19 @@
                     <Image Source="../Resources/Icons/Save_6530.png" />
                     <Button.ToolTip>
                         <TextBlock>Save As</TextBlock>
+                    </Button.ToolTip>
+                </Button>
+                <Separator />
+                <Button Command="ApplicationCommands.Undo">
+                    <Image Source="../Resources/Icons/Arrow_UndoRevertRestore_16xLG_color.png" />
+                    <Button.ToolTip>
+                        <TextBlock>Undo</TextBlock>
+                    </Button.ToolTip>
+                </Button>
+                <Button Command="ApplicationCommands.Redo">
+                    <Image Source="../Resources/Icons/Arrow_RedoRetry_16xLG_color.png" />
+                    <Button.ToolTip>
+                        <TextBlock>Redo</TextBlock>
                     </Button.ToolTip>
                 </Button>
                 <Separator />
@@ -81,6 +98,12 @@
         <CommandBinding Command="ApplicationCommands.SaveAs"
                     Executed="CommandExecutedSaveAs"
                     CanExecute="CommandCanExecuteSaveAs"/>
+        <CommandBinding Command="ApplicationCommands.Undo"
+                    Executed="CommandExecutedUndo"
+                    CanExecute="CommandCanExecuteUndo"/>
+        <CommandBinding Command="ApplicationCommands.Redo"
+                    Executed="CommandExecutedRedo"
+                    CanExecute="CommandCanExecuteRedo"/>
         <CommandBinding Command="ApplicationCommands.Help"
                     Executed="CommandExecutedHelp"
                     CanExecute="CommandCanExecuteHelp"/>
