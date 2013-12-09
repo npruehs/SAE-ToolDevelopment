@@ -196,6 +196,11 @@ namespace LevelEditor.View
             e.CanExecute = this.controller.CanExecuteRedo();
         }
 
+        private void CommandCanExecuteSave(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.controller.CanExecuteSave();
+        }
+
         private void CommandCanExecuteSaveAs(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = this.controller.CanExecuteSaveAs();
@@ -229,6 +234,11 @@ namespace LevelEditor.View
         private void CommandExecutedRedo(object sender, ExecutedRoutedEventArgs e)
         {
             this.controller.ExecuteRedo();
+        }
+
+        private void CommandExecutedSave(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.controller.ExecuteSave();
         }
 
         private void CommandExecutedSaveAs(object sender, ExecutedRoutedEventArgs e)

@@ -178,6 +178,17 @@ namespace LevelEditor.Control
         /// <returns>
         ///   <c>true</c>, the current map can be saved, and <c>false</c> otherwise.
         /// </returns>
+        public bool CanExecuteSave()
+        {
+            return this.map != null;
+        }
+
+        /// <summary>
+        ///   Whether the current map can be saved.
+        /// </summary>
+        /// <returns>
+        ///   <c>true</c>, the current map can be saved, and <c>false</c> otherwise.
+        /// </returns>
         public bool CanExecuteSaveAs()
         {
             return this.map != null;
@@ -365,6 +376,29 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
+        ///   Saves the current map to the current file, if there's any,
+        ///   and shows a save file dialog box otherwise.
+        /// </summary>
+        public void ExecuteSave()
+        {
+            // Check if there's an open file.
+            if (this.currentMapFile == null)
+            {
+                this.ExecuteSaveAs();
+                return;
+            }
+
+            // Recreate map file.
+            this.currentMapFile.Close();
+
+            FileInfo fileInfo = new FileInfo(this.currentMapFileName);
+            this.currentMapFile = fileInfo.Create();
+
+            // Serialize map.
+            this.SerializeMap();
+        }
+
+        /// <summary>
         ///   Shows a save file dialog box and saves the current map to the specified file.
         /// </summary>
         public void ExecuteSaveAs()
@@ -402,12 +436,7 @@ namespace LevelEditor.Control
             this.currentMapFile = fileInfo.Create();
 
             // Serialize map.
-            XmlSerializer serializer = new XmlSerializer(typeof(Map));
-
-            XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
-            namespaces.Add("np", "http://www.npruehs.de/teaching");
-
-            serializer.Serialize(this.currentMapFile, this.map, namespaces);
+            this.SerializeMap();
         }
 
         /// <summary>
@@ -586,6 +615,19 @@ namespace LevelEditor.Control
 
                 this.tileImages.Add(tileType.Name, tileImage);
             }
+        }
+
+        /// <summary>
+        /// Writes the current map to the current map file.
+        /// </summary>
+        private void SerializeMap()
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(Map));
+
+            XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
+            namespaces.Add("np", "http://www.npruehs.de/teaching");
+
+            serializer.Serialize(this.currentMapFile, this.map, namespaces);
         }
 
         /// <summary>

@@ -8,6 +8,7 @@
                 <MenuItem Command="ApplicationCommands.New"/>
                 <Separator />
                 <MenuItem Command="ApplicationCommands.Open"/>
+                <MenuItem Command="ApplicationCommands.Save"/>
                 <MenuItem Command="ApplicationCommands.SaveAs"/>
                 <Separator />
                 <MenuItem Command="ApplicationCommands.Help"/>
@@ -35,10 +36,10 @@
                         <TextBlock>Open</TextBlock>
                     </Button.ToolTip>
                 </Button>
-                <Button Command="ApplicationCommands.SaveAs">
+                <Button Command="ApplicationCommands.Save">
                     <Image Source="../Resources/Icons/Save_6530.png" />
                     <Button.ToolTip>
-                        <TextBlock>Save As</TextBlock>
+                        <TextBlock>Save</TextBlock>
                     </Button.ToolTip>
                 </Button>
                 <Separator />
@@ -95,6 +96,9 @@
         <CommandBinding Command="ApplicationCommands.Open"
                     Executed="CommandExecutedOpen"
                     CanExecute="CommandCanExecuteOpen"/>
+        <CommandBinding Command="ApplicationCommands.Save"
+                    Executed="CommandExecutedSave"
+                    CanExecute="CommandCanExecuteSave"/>
         <CommandBinding Command="ApplicationCommands.SaveAs"
                     Executed="CommandExecutedSaveAs"
                     CanExecute="CommandCanExecuteSaveAs"/>
