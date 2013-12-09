@@ -8,6 +8,7 @@ namespace LevelEditor.Control
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.IO;
     using System.Threading;
     using System.Windows;
     using System.Windows.Media.Imaging;
@@ -22,15 +23,19 @@ namespace LevelEditor.Control
     using Microsoft.Win32;
 
     /// <summary>
-    /// Main application controller.
+    ///   Main application controller.
     /// </summary>
     public partial class App
     {
         #region Constants
 
+        private const string MainWindowTitle = "Level Editor";
+
         private const string MapFileExtension = ".map";
 
         private const string MapFileFilter = "Map files (.map)|*.map";
+
+        private const string UnsavedMapFileName = "Untitled";
 
         private const string XmlElementHeight = "Height";
 
@@ -49,52 +54,62 @@ namespace LevelEditor.Control
         #region Fields
 
         /// <summary>
-        /// Stack of commands that can be redone.
+        ///   Stack of commands that can be redone.
         /// </summary>
         private readonly Stack<ICommand> redoStack = new Stack<ICommand>();
 
         /// <summary>
-        /// Stack of commands that can be undone.
+        ///   Stack of commands that can be undone.
         /// </summary>
         private readonly Stack<ICommand> undoStack = new Stack<ICommand>();
 
         /// <summary>
-        /// Window showing information about the application.
+        ///   Window showing information about the application.
         /// </summary>
         private AboutWindow aboutWindow;
 
         /// <summary>
-        /// Current active brush.
+        ///   Current active brush.
         /// </summary>
         private MapTileType currentBrush;
 
         /// <summary>
-        /// Current draw command that will be pushed on Undo stack.
+        ///   Current draw command that will be pushed on Undo stack.
         /// </summary>
         private DrawCommand currentDrawCommand;
 
         /// <summary>
-        /// Main application window.
+        ///   Current map file being edited.
+        /// </summary>
+        private Stream currentMapFile;
+
+        /// <summary>
+        ///   Name of the current map file being edited.
+        /// </summary>
+        private string currentMapFileName;
+
+        /// <summary>
+        ///   Main application window.
         /// </summary>
         private MainWindow mainWindow;
 
         /// <summary>
-        /// Current map being edited by the user.
+        ///   Current map being edited by the user.
         /// </summary>
         private Map map;
 
         /// <summary>
-        /// Window allowing to specify the properties of a new map to create.
+        ///   Window allowing to specify the properties of a new map to create.
         /// </summary>
         private NewMapWindow newMapWindow;
 
         /// <summary>
-        /// Available map tile images.
+        ///   Available map tile images.
         /// </summary>
         private Dictionary<string, BitmapImage> tileImages;
 
         /// <summary>
-        /// Available map tile types.
+        ///   Available map tile types.
         /// </summary>
         private Dictionary<string, MapTileType> tileTypes;
 
@@ -103,10 +118,10 @@ namespace LevelEditor.Control
         #region Public Methods and Operators
 
         /// <summary>
-        /// Whether the application can be shut down.
+        ///   Whether the application can be shut down.
         /// </summary>
         /// <returns>
-        /// <c>true</c>, if the application can be shut down, and <c>false</c> otherwise.
+        ///   <c>true</c>, if the application can be shut down, and <c>false</c> otherwise.
         /// </returns>
         public bool CanExecuteClose()
         {
@@ -114,10 +129,10 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Whether the About window of the application can be shown.
+        ///   Whether the About window of the application can be shown.
         /// </summary>
         /// <returns>
-        /// <c>true</c>, if the About window of the application can be shown, and <c>false</c> otherwise.
+        ///   <c>true</c>, if the About window of the application can be shown, and <c>false</c> otherwise.
         /// </returns>
         public bool CanExecuteHelp()
         {
@@ -125,10 +140,10 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Whether the window that allows specifying the properties of a new map to create can be shown.
+        ///   Whether the window that allows specifying the properties of a new map to create can be shown.
         /// </summary>
         /// <returns>
-        /// <c>true</c>, if the New Map window can be shown, and <c>false</c> otherwise.
+        ///   <c>true</c>, if the New Map window can be shown, and <c>false</c> otherwise.
         /// </returns>
         public bool CanExecuteNew()
         {
@@ -136,10 +151,10 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Whether an existing map can be opened.
+        ///   Whether an existing map can be opened.
         /// </summary>
         /// <returns>
-        /// <c>true</c>, if an existing map can be opened, and <c>false</c> otherwise.
+        ///   <c>true</c>, if an existing map can be opened, and <c>false</c> otherwise.
         /// </returns>
         public bool CanExecuteOpen()
         {
@@ -147,10 +162,10 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Whether there is any command to redo.
+        ///   Whether there is any command to redo.
         /// </summary>
         /// <returns>
-        /// <c>true</c>, if there's any command to redo, and <c>false</c> otherwise.
+        ///   <c>true</c>, if there's any command to redo, and <c>false</c> otherwise.
         /// </returns>
         public bool CanExecuteRedo()
         {
@@ -158,10 +173,10 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Whether the current map can be saved.
+        ///   Whether the current map can be saved.
         /// </summary>
         /// <returns>
-        /// <c>true</c>, the current map can be saved, and <c>false</c> otherwise.
+        ///   <c>true</c>, the current map can be saved, and <c>false</c> otherwise.
         /// </returns>
         public bool CanExecuteSaveAs()
         {
@@ -169,10 +184,10 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Whether there is any command to undo.
+        ///   Whether there is any command to undo.
         /// </summary>
         /// <returns>
-        /// <c>true</c>, if there's any command to undo, and <c>false</c> otherwise.
+        ///   <c>true</c>, if there's any command to undo, and <c>false</c> otherwise.
         /// </returns>
         public bool CanExecuteUndo()
         {
@@ -180,7 +195,7 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Creates a new map based on the properties of the New Map window.
+        ///   Creates a new map based on the properties of the New Map window.
         /// </summary>
         public void CreateMap()
         {
@@ -223,7 +238,7 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Shuts down the application.
+        ///   Shuts down the application.
         /// </summary>
         public void ExecuteClose()
         {
@@ -231,7 +246,7 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Shows the About window of the application.
+        ///   Shows the About window of the application.
         /// </summary>
         public void ExecuteHelp()
         {
@@ -245,7 +260,7 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Shows the window that allows specifying the properties of a new map to create.
+        ///   Shows the window that allows specifying the properties of a new map to create.
         /// </summary>
         public void ExecuteNew()
         {
@@ -260,7 +275,7 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Shows an open file dialog box and opens the specified map file.
+        ///   Shows an open file dialog box and opens the specified map file.
         /// </summary>
         public void ExecuteOpen()
         {
@@ -283,47 +298,60 @@ namespace LevelEditor.Control
                 return;
             }
 
-            // Open map file.
-            using (var stream = openFileDialog.OpenFile())
+            // Close current file.
+            if (this.currentMapFile != null)
             {
-                try
-                {
-                    // Validate schema.
-                    XmlReaderSettings readerSettings = new XmlReaderSettings();
-                    readerSettings.Schemas.Add("http://www.npruehs.de/teaching", "XML/MapSchema.xsd");
-                    readerSettings.ValidationType = ValidationType.Schema;
+                this.currentMapFile.Close();
+            }
 
-                    using (var reader = XmlReader.Create(openFileDialog.FileName, readerSettings))
+            // Update main window title.
+            this.currentMapFileName = openFileDialog.FileName;
+            this.mainWindow.Title = string.Format("{0} - {1}", MainWindowTitle, this.currentMapFileName);
+
+            // Open map file.
+            FileInfo fileInfo = new FileInfo(this.currentMapFileName);
+            this.currentMapFile = fileInfo.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.Read);
+
+            try
+            {
+                // Validate schema.
+                XmlReaderSettings readerSettings = new XmlReaderSettings();
+                readerSettings.Schemas.Add("http://www.npruehs.de/teaching", "XML/MapSchema.xsd");
+                readerSettings.ValidationType = ValidationType.Schema;
+
+                using (var reader = XmlReader.Create(this.currentMapFile, readerSettings))
+                {
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                        }
                     }
+                }
 
-                    // Deserialize map.
-                    XmlSerializer serializer = new XmlSerializer(typeof(Map));
-                    this.map = (Map)serializer.Deserialize(stream);
+                // Rewind stream.
+                this.currentMapFile.Seek(0, SeekOrigin.Begin);
 
-                    // Show new map tiles.
-                    this.UpdateMapCanvas();
-                }
-                catch (InvalidOperationException)
-                {
-                    this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
-                }
-                catch (XmlException)
-                {
-                    this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
-                }
-                catch (XmlSchemaValidationException)
-                {
-                    this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
-                }
+                // Deserialize map.
+                XmlSerializer serializer = new XmlSerializer(typeof(Map));
+                this.map = (Map)serializer.Deserialize(this.currentMapFile);
+
+                // Show new map tiles.
+                this.UpdateMapCanvas();
+            }
+            catch (InvalidOperationException)
+            {
+                this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
+            }
+            catch (XmlException)
+            {
+                this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
+            }
+            catch (XmlSchemaValidationException)
+            {
+                this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
             }
         }
 
         /// <summary>
-        /// Executes the most recent undone command.
+        ///   Executes the most recent undone command.
         /// </summary>
         public void ExecuteRedo()
         {
@@ -337,7 +365,7 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Shows a save file dialog box and saves the current map to the specified file.
+        ///   Shows a save file dialog box and saves the current map to the specified file.
         /// </summary>
         public void ExecuteSaveAs()
         {
@@ -359,20 +387,31 @@ namespace LevelEditor.Control
                 return;
             }
 
-            // Open file stream.
-            using (var stream = saveFileDialog.OpenFile())
+            // Close current file.
+            if (this.currentMapFile != null)
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(Map));
-
-                XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
-                namespaces.Add("np", "http://www.npruehs.de/teaching");
-
-                serializer.Serialize(stream, this.map, namespaces);
+                this.currentMapFile.Close();
             }
+
+            // Update main window title.
+            this.currentMapFileName = saveFileDialog.FileName;
+            this.mainWindow.Title = string.Format("{0} - {1}", MainWindowTitle, this.currentMapFileName);
+
+            // Open file stream.
+            FileInfo fileInfo = new FileInfo(this.currentMapFileName);
+            this.currentMapFile = fileInfo.Create();
+
+            // Serialize map.
+            XmlSerializer serializer = new XmlSerializer(typeof(Map));
+
+            XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
+            namespaces.Add("np", "http://www.npruehs.de/teaching");
+
+            serializer.Serialize(this.currentMapFile, this.map, namespaces);
         }
 
         /// <summary>
-        /// Undoes the last command.
+        ///   Undoes the last command.
         /// </summary>
         public void ExecuteUndo()
         {
@@ -386,7 +425,7 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Gets the image for the map tile of the specified type.
+        ///   Gets the image for the map tile of the specified type.
         /// </summary>
         /// <param name="tileType">Type of the tile to get the image for.</param>
         /// <returns>Image for the map tile of the specified type.</returns>
@@ -396,7 +435,7 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Prepares a new command that can be undone later.
+        ///   Prepares a new command that can be undone later.
         /// </summary>
         public void OnBrushDown()
         {
@@ -409,7 +448,7 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Pushes the current command, enabling Undo.
+        ///   Pushes the current command, enabling Undo.
         /// </summary>
         public void OnBrushUp()
         {
@@ -495,6 +534,10 @@ namespace LevelEditor.Control
             // Reset undo stack.
             this.undoStack.Clear();
             this.redoStack.Clear();
+
+            // Update main window title.
+            this.currentMapFileName = UnsavedMapFileName;
+            this.mainWindow.Title = string.Format("{0} - {1}", MainWindowTitle, this.currentMapFileName);
         }
 
         private void BackgroundCreateMapProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -546,7 +589,7 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Shows an error message with the specified title and text.
+        ///   Shows an error message with the specified title and text.
         /// </summary>
         /// <param name="title">Title of the error message.</param>
         /// <param name="text">Text of the error message.</param>
@@ -556,7 +599,7 @@ namespace LevelEditor.Control
         }
 
         /// <summary>
-        /// Passes the current map to the canvas for rendering.
+        ///   Passes the current map to the canvas for rendering.
         /// </summary>
         private void UpdateMapCanvas()
         {
