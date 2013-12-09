@@ -113,6 +113,26 @@ namespace LevelEditor.Control
         /// </summary>
         private Dictionary<string, MapTileType> tileTypes;
 
+        /// <summary>
+        ///   Number of commands on the undo stack the last time the current map was saved.
+        /// </summary>
+        private int undoStackSizeAtLastSave;
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// Whether the current map has been modified since the last save.
+        /// </summary>
+        public bool MapDirty
+        {
+            get
+            {
+                return this.undoStack.Count != this.undoStackSizeAtLastSave;
+            }
+        }
+
         #endregion
 
         #region Public Methods and Operators
@@ -373,6 +393,8 @@ namespace LevelEditor.Control
             // Redo command.
             command.DoCommand();
             this.UpdateMapCanvas();
+
+            this.UpdateMainWindowTitle();
         }
 
         /// <summary>
@@ -451,6 +473,8 @@ namespace LevelEditor.Control
             // Undo command.
             command.UndoCommand();
             this.UpdateMapCanvas();
+
+            this.UpdateMainWindowTitle();
         }
 
         /// <summary>
@@ -483,6 +507,8 @@ namespace LevelEditor.Control
         {
             this.undoStack.Push(this.currentDrawCommand);
             this.redoStack.Clear();
+
+            this.UpdateMainWindowTitle();
         }
 
         public void OnTileClicked(Vector2I position)
@@ -563,6 +589,7 @@ namespace LevelEditor.Control
             // Reset undo stack.
             this.undoStack.Clear();
             this.redoStack.Clear();
+            this.undoStackSizeAtLastSave = 0;
 
             // Update main window title.
             this.currentMapFileName = UnsavedMapFileName;
@@ -622,12 +649,17 @@ namespace LevelEditor.Control
         /// </summary>
         private void SerializeMap()
         {
+            // Write map data.
             XmlSerializer serializer = new XmlSerializer(typeof(Map));
 
             XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
             namespaces.Add("np", "http://www.npruehs.de/teaching");
 
             serializer.Serialize(this.currentMapFile, this.map, namespaces);
+
+            // Mark map as not dirty.
+            this.undoStackSizeAtLastSave = this.undoStack.Count;
+            this.UpdateMainWindowTitle();
         }
 
         /// <summary>
@@ -638,6 +670,28 @@ namespace LevelEditor.Control
         private void ShowErrorMessage(string title, string text)
         {
             MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.Cancel);
+        }
+
+        /// <summary>
+        /// Checks whether the current map has been modified since the last save,
+        /// and updates the main window title accordingly.
+        /// </summary>
+        private void UpdateMainWindowTitle()
+        {
+            if (this.MapDirty)
+            {
+                if (!this.MainWindow.Title.EndsWith("*", StringComparison.Ordinal))
+                {
+                    this.MainWindow.Title += "*";
+                }
+            }
+            else
+            {
+                if (this.MainWindow.Title.EndsWith("*", StringComparison.Ordinal))
+                {
+                    this.MainWindow.Title = this.MainWindow.Title.Substring(0, this.mainWindow.Title.Length - 1);
+                }
+            }
         }
 
         /// <summary>
