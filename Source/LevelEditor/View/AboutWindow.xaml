@@ -1,11 +1,11 @@
-﻿<Window x:Class="LevelEditor.View.AboutWindow"
+﻿<Window x:Uid="Window_1" x:Class="LevelEditor.View.AboutWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="About" Height="300" Width="300">
-    <TextBlock>
-        Level Editor<LineBreak/>
-        Version 1.0<LineBreak/>
-        Copyright 2013 Nick Pruehs.<LineBreak/>
+    <TextBlock x:Uid="TextBlock_1">
+        Level Editor<LineBreak x:Uid="LineBreak_1"/>
+        Version 1.0<LineBreak x:Uid="LineBreak_2"/>
+        Copyright 2013 Nick Pruehs.<LineBreak x:Uid="LineBreak_3"/>
         All rights reserved.
     </TextBlock>
 </Window>

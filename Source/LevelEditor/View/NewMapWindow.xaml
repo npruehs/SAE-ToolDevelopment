@@ -1,20 +1,20 @@
-﻿<Window x:Class="LevelEditor.View.NewMapWindow"
+﻿<Window x:Uid="Window_1" x:Class="LevelEditor.View.NewMapWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="New Map" Height="300" Width="300">
-    <StackPanel>
-        <DockPanel>
-            <TextBlock DockPanel.Dock="Left" Width="75" Margin="5">Map Width:</TextBlock>
-            <TextBox Name="TextBoxMapWidth" Margin="5">32</TextBox>
+    <StackPanel x:Uid="StackPanel_1">
+        <DockPanel x:Uid="DockPanel_1">
+            <TextBlock x:Uid="TextBlock_1" DockPanel.Dock="Left" Width="75" Margin="5">Map Width:</TextBlock>
+            <TextBox x:Uid="TextBoxMapWidth" Name="TextBoxMapWidth" Margin="5">32</TextBox>
         </DockPanel>
-        <DockPanel>
-            <TextBlock DockPanel.Dock="Left" Width="75" Margin="5">Map Height:</TextBlock>
-            <TextBox Name="TextBoxMapHeight" Margin="5">32</TextBox>
+        <DockPanel x:Uid="DockPanel_2">
+            <TextBlock x:Uid="TextBlock_2" DockPanel.Dock="Left" Width="75" Margin="5">Map Height:</TextBlock>
+            <TextBox x:Uid="TextBoxMapHeight" Name="TextBoxMapHeight" Margin="5">32</TextBox>
         </DockPanel>
-        <DockPanel>
-            <TextBlock DockPanel.Dock="Left" Width="75" Margin="5">Default Tile:</TextBlock>
-            <StackPanel Margin="5" Name="DefaultTilePanel" />
+        <DockPanel x:Uid="DockPanel_3">
+            <TextBlock x:Uid="TextBlock_3" DockPanel.Dock="Left" Width="75" Margin="5">Default Tile:</TextBlock>
+            <StackPanel x:Uid="DefaultTilePanel" Margin="5" Name="DefaultTilePanel" />
         </DockPanel>
-        <Button Click="OnCreateMapClicked">Create New Map</Button>
+        <Button x:Uid="Button_1" Click="OnCreateMapClicked">Create New Map</Button>
     </StackPanel>
 </Window>

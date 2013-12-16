@@ -1,117 +1,117 @@
-﻿<Window x:Class="LevelEditor.View.MainWindow"
+﻿<Window x:Uid="Window_1" x:Class="LevelEditor.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Level Editor" Height="600" Width="800">
-    <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File">
-                <MenuItem Command="ApplicationCommands.New"/>
-                <Separator />
-                <MenuItem Command="ApplicationCommands.Open"/>
-                <MenuItem Command="ApplicationCommands.Save"/>
-                <MenuItem Command="ApplicationCommands.SaveAs"/>
-                <Separator />
-                <MenuItem Command="ApplicationCommands.Help"/>
-                <Separator />
-                <MenuItem Command="ApplicationCommands.Close"/>
+    <DockPanel x:Uid="DockPanel_1">
+        <Menu x:Uid="Menu_1" DockPanel.Dock="Top">
+            <MenuItem x:Uid="MenuItem_1" Header="_File">
+                <MenuItem x:Uid="MenuItem_2" Command="ApplicationCommands.New"/>
+                <Separator x:Uid="Separator_1" />
+                <MenuItem x:Uid="MenuItem_3" Command="ApplicationCommands.Open"/>
+                <MenuItem x:Uid="MenuItem_4" Command="ApplicationCommands.Save"/>
+                <MenuItem x:Uid="MenuItem_5" Command="ApplicationCommands.SaveAs"/>
+                <Separator x:Uid="Separator_2" />
+                <MenuItem x:Uid="MenuItem_6" Command="ApplicationCommands.Help"/>
+                <Separator x:Uid="Separator_3" />
+                <MenuItem x:Uid="MenuItem_7" Command="ApplicationCommands.Close"/>
             </MenuItem>
-            <MenuItem Header="_Edit">
-                <MenuItem Command="ApplicationCommands.Undo"/>
-                <MenuItem Command="ApplicationCommands.Redo"/>
+            <MenuItem x:Uid="MenuItem_8" Header="_Edit">
+                <MenuItem x:Uid="MenuItem_9" Command="ApplicationCommands.Undo"/>
+                <MenuItem x:Uid="MenuItem_10" Command="ApplicationCommands.Redo"/>
             </MenuItem>
         </Menu>
 
-        <ToolBarTray DockPanel.Dock="Top">
-            <ToolBar>
-                <Button Command="ApplicationCommands.New">
-                    <Image Source="../Resources/Icons/action_create_16xLG.png" />
+        <ToolBarTray x:Uid="ToolBarTray_1" DockPanel.Dock="Top">
+            <ToolBar x:Uid="ToolBar_1">
+                <Button x:Uid="Button_1" Command="ApplicationCommands.New">
+                    <Image x:Uid="Image_1" Source="../Resources/Icons/action_create_16xLG.png" />
                     <Button.ToolTip>
-                        <TextBlock>New Map</TextBlock>
+                        <TextBlock x:Uid="TextBlock_1">New Map</TextBlock>
                     </Button.ToolTip>
                 </Button>
-                <Separator />
-                <Button Command="ApplicationCommands.Open">
-                    <Image Source="../Resources/Icons/Open_6529.png" />
+                <Separator x:Uid="Separator_4" />
+                <Button x:Uid="Button_2" Command="ApplicationCommands.Open">
+                    <Image x:Uid="Image_2" Source="../Resources/Icons/Open_6529.png" />
                     <Button.ToolTip>
-                        <TextBlock>Open</TextBlock>
+                        <TextBlock x:Uid="TextBlock_2">Open</TextBlock>
                     </Button.ToolTip>
                 </Button>
-                <Button Command="ApplicationCommands.Save">
-                    <Image Source="../Resources/Icons/Save_6530.png" />
+                <Button x:Uid="Button_3" Command="ApplicationCommands.Save">
+                    <Image x:Uid="Image_3" Source="../Resources/Icons/Save_6530.png" />
                     <Button.ToolTip>
-                        <TextBlock>Save</TextBlock>
+                        <TextBlock x:Uid="TextBlock_3">Save</TextBlock>
                     </Button.ToolTip>
                 </Button>
-                <Separator />
-                <Button Command="ApplicationCommands.Undo">
-                    <Image Source="../Resources/Icons/Arrow_UndoRevertRestore_16xLG_color.png" />
+                <Separator x:Uid="Separator_5" />
+                <Button x:Uid="Button_4" Command="ApplicationCommands.Undo">
+                    <Image x:Uid="Image_4" Source="../Resources/Icons/Arrow_UndoRevertRestore_16xLG_color.png" />
                     <Button.ToolTip>
-                        <TextBlock>Undo</TextBlock>
+                        <TextBlock x:Uid="TextBlock_4">Undo</TextBlock>
                     </Button.ToolTip>
                 </Button>
-                <Button Command="ApplicationCommands.Redo">
-                    <Image Source="../Resources/Icons/Arrow_RedoRetry_16xLG_color.png" />
+                <Button x:Uid="Button_5" Command="ApplicationCommands.Redo">
+                    <Image x:Uid="Image_5" Source="../Resources/Icons/Arrow_RedoRetry_16xLG_color.png" />
                     <Button.ToolTip>
-                        <TextBlock>Redo</TextBlock>
+                        <TextBlock x:Uid="TextBlock_5">Redo</TextBlock>
                     </Button.ToolTip>
                 </Button>
-                <Separator />
-                <Button Command="ApplicationCommands.Help">
-                    <Image Source="../Resources/Icons/Symbols_Help_and_inclusive_16xLG.png" />
+                <Separator x:Uid="Separator_6" />
+                <Button x:Uid="Button_6" Command="ApplicationCommands.Help">
+                    <Image x:Uid="Image_6" Source="../Resources/Icons/Symbols_Help_and_inclusive_16xLG.png" />
                     <Button.ToolTip>
-                        <TextBlock>Help</TextBlock>
+                        <TextBlock x:Uid="TextBlock_6">Help</TextBlock>
                     </Button.ToolTip>
                 </Button>
             </ToolBar>
         </ToolBarTray>
 
-        <StatusBar DockPanel.Dock="Bottom">
-            <StatusBarItem>
-                <TextBlock Name="StatusText">Ready.</TextBlock>
+        <StatusBar x:Uid="StatusBar_1" DockPanel.Dock="Bottom">
+            <StatusBarItem x:Uid="StatusBarItem_1">
+                <TextBlock x:Uid="StatusText" Name="StatusText">Ready.</TextBlock>
             </StatusBarItem>
-            <StatusBarItem>
-                <TextBlock Name="StatusProgressText"></TextBlock>
+            <StatusBarItem x:Uid="StatusBarItem_2">
+                <TextBlock x:Uid="StatusProgressText" Name="StatusProgressText"></TextBlock>
             </StatusBarItem>
-            <StatusBarItem HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                <ProgressBar Name="StatusProgress" />
+            <StatusBarItem x:Uid="StatusBarItem_3" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                <ProgressBar x:Uid="StatusProgress" Name="StatusProgress" />
             </StatusBarItem>
         </StatusBar>
         
-        <DockPanel DockPanel.Dock="Top">
-            <StackPanel DockPanel.Dock="Left" Width="75">
-                <TextBlock Margin="5">Brush</TextBlock>
-                <StackPanel Margin="5" Name="BrushSelectionPanel" />
+        <DockPanel x:Uid="DockPanel_2" DockPanel.Dock="Top">
+            <StackPanel x:Uid="StackPanel_1" DockPanel.Dock="Left" Width="75">
+                <TextBlock x:Uid="TextBlock_7" Margin="5">Brush</TextBlock>
+                <StackPanel x:Uid="BrushSelectionPanel" Margin="5" Name="BrushSelectionPanel" />
             </StackPanel>
             
-            <ScrollViewer DockPanel.Dock="Right" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Canvas Name="MapCanvas"  />
+            <ScrollViewer x:Uid="ScrollViewer_1" DockPanel.Dock="Right" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Canvas x:Uid="MapCanvas" Name="MapCanvas"  />
             </ScrollViewer>
         </DockPanel>
     </DockPanel>
 
     <Window.CommandBindings>
-        <CommandBinding Command="ApplicationCommands.New"
+        <CommandBinding x:Uid="CommandBinding_1" Command="ApplicationCommands.New"
                     Executed="CommandExecutedNew"
                     CanExecute="CommandCanExecuteNew"/>
-        <CommandBinding Command="ApplicationCommands.Open"
+        <CommandBinding x:Uid="CommandBinding_2" Command="ApplicationCommands.Open"
                     Executed="CommandExecutedOpen"
                     CanExecute="CommandCanExecuteOpen"/>
-        <CommandBinding Command="ApplicationCommands.Save"
+        <CommandBinding x:Uid="CommandBinding_3" Command="ApplicationCommands.Save"
                     Executed="CommandExecutedSave"
                     CanExecute="CommandCanExecuteSave"/>
-        <CommandBinding Command="ApplicationCommands.SaveAs"
+        <CommandBinding x:Uid="CommandBinding_4" Command="ApplicationCommands.SaveAs"
                     Executed="CommandExecutedSaveAs"
                     CanExecute="CommandCanExecuteSaveAs"/>
-        <CommandBinding Command="ApplicationCommands.Undo"
+        <CommandBinding x:Uid="CommandBinding_5" Command="ApplicationCommands.Undo"
                     Executed="CommandExecutedUndo"
                     CanExecute="CommandCanExecuteUndo"/>
-        <CommandBinding Command="ApplicationCommands.Redo"
+        <CommandBinding x:Uid="CommandBinding_6" Command="ApplicationCommands.Redo"
                     Executed="CommandExecutedRedo"
                     CanExecute="CommandCanExecuteRedo"/>
-        <CommandBinding Command="ApplicationCommands.Help"
+        <CommandBinding x:Uid="CommandBinding_7" Command="ApplicationCommands.Help"
                     Executed="CommandExecutedHelp"
                     CanExecute="CommandCanExecuteHelp"/>
-        <CommandBinding Command="ApplicationCommands.Close"
+        <CommandBinding x:Uid="CommandBinding_8" Command="ApplicationCommands.Close"
                     Executed="CommandExecutedClose"
                     CanExecute="CommandCanExecuteClose"/>
     </Window.CommandBindings>
